@@ -38,7 +38,6 @@ st.markdown(
 # Embedding CSS in the app
 st.markdown(custom_css, unsafe_allow_html=True)
 
-
 def record_audio_to_text():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
@@ -46,21 +45,17 @@ def record_audio_to_text():
         message_placeholder = st.empty()
         message_placeholder.info("Listening... Speak now!")
         try:
-            # Increase timeout and add a phrase_time_limit
-            audio_data = recognizer.listen(source, timeout=10, phrase_time_limit=15)
+            audio_data = recognizer.listen(source, timeout=5)
             message_placeholder.empty()  # Remove the "Listening..." message
             return recognizer.recognize_google(audio_data)
-        except sr.WaitTimeoutError:
-            message_placeholder.empty()
-            st.error("Listening timed out. Please speak louder or check your microphone settings.")
         except sr.UnknownValueError:
-            message_placeholder.empty()
-            st.error("Sorry, could not understand the audio. Please try again.")
+            message_placeholder.empty()  # Remove the message on error
+            st.error("Sorry, could not understand the audio.")
         except sr.RequestError as e:
-            message_placeholder.empty()
+            message_placeholder.empty()  # Remove the message on error
             st.error(f"Could not request results; {e}")
         except Exception as e:
-            message_placeholder.empty()
+            message_placeholder.empty()  # Remove the message on error
             st.error(f"An error occurred: {e}")
         return ""
 
